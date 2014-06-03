@@ -352,6 +352,21 @@ public class NIOConnection implements Connection {
         tlsContext.init(km, tm, null);
 
         SSLFilter filter = new SSLFilter(tlsContext);
+        
+        String protocols = JiveGlobals.getProperty("xmpp.socket.ssl.protocols", "");        
+        if (!protocols.isEmpty())
+        {
+        	Log.debug("setting protocols: " + protocols);
+        	filter.setEnabledProtocols(protocols.split(","));        	
+        }
+        
+        String cipherSuites = JiveGlobals.getProperty("xmpp.socket.ssl.cipherSuites", "");                       
+        if (!cipherSuites.isEmpty())
+        {        	
+        	Log.debug("setting cipher suites: " + cipherSuites);
+        	filter.setEnabledCipherSuites(cipherSuites.split(","));
+        }
+        	
         filter.setUseClientMode(clientMode);
         if (authentication == ClientAuth.needed) {
             filter.setNeedClientAuth(true);
